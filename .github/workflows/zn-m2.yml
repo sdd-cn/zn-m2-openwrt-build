@@ -44,6 +44,8 @@ jobs:
       should_build: ${{ steps.check.outputs.should_build }}
       latest_pkg_sha: ${{ steps.check.outputs.latest_pkg_sha }}
     steps:
+    - uses: actions/checkout@v7
+
     - uses: actions/cache/restore@v6
       with:
         path: /tmp/passwall-cache
