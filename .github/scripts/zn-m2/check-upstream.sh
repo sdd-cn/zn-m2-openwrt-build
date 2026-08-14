@@ -6,7 +6,10 @@ SHOULD_BUILD=false
 # Check Passwall release tag
 LATEST_PW=$(gh release list -R Openwrt-Passwall/openwrt-passwall -L 1 --json tagName -q '.[0].tagName')
 LATEST_TAG=$(gh release list -R "$GITHUB_REPOSITORY" -L 1 --json tagName -q '.[0].tagName' || echo "")
-if [ "$LATEST_PW" != "$LATEST_TAG" ]; then
+# Normalize the revision suffix: the source may record passwall as YY.MM.DD-rN
+# while upstream tags it YY.MM.DD-N — the same version. Strip the "r" so
+# 26.8.12-r1 (ours) == 26.8.12-1 (upstream) doesn't spuriously trigger a build.
+if [ "${LATEST_PW//-r/-}" != "${LATEST_TAG//-r/-}" ]; then
   echo "Passwall release: ${LATEST_TAG:-none} -> $LATEST_PW"
   SHOULD_BUILD=true
 else
